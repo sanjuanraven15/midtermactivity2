@@ -1,108 +1,274 @@
 <template>
     <div class="product-list">
-        <center><h1>Product List</h1></center>
-        <hr>
-        <table class="item-list">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Pencil</td>
-                    <td>₱8</td>
-                </tr>
-                <tr>
-                    <td>Ballpen</td>
-                    <td>₱10</td>
-                </tr>
-                <tr>
-                    <td>Marker</td>
-                    <td>₱15</td>
-                </tr>
-                <tr>
-                    <td>Bond Paper</td>
-                    <td>₱1</td>
-                </tr>
-                <tr>
-                    <td>Sticky Notes</td>
-                    <td>₱10</td>
-                </tr>
-                <tr>
-                    <td>Yellow Pad</td>
-                    <td>₱25</td>
-                </tr>
-                <tr>
-                    <td>Notebook</td>
-                    <td>₱32</td>
-                </tr>
-                <tr>
-                    <td>Eraser</td>
-                    <td>₱5</td>
-                </tr>
-                <tr>
-                    <td>Colored Paper</td>
-                    <td>₱2</td>
-                </tr>
-                <tr>
-                    <td>Scissor</td>
-                    <td>₱28</td>
-                </tr>
-            </tbody>
-        </table>
+      <center><h1>Product List</h1></center>
+      <hr>
+      <table class="item-list">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in items" :key="index">
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ formatPrice(item.cost) }}</td>
+            <td>
+              <button class="edit-button">Edit</button>
+              <button class="remove-button">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- Modal for adding new products -->
+      <div class="modal" :class="{ 'active': showForm }">
+        <div class="modal-content">
+          <span class="close" @click="closeModal">&times;</span>
+          <h2>Add Product</h2>
+          <form @submit.prevent="addProduct">
+            <div>
+              <label for="productName">Product Name:</label>
+              <input type="text" id="productName" v-model="newProduct.name" required>
+            </div>
+            <div>
+              <label for="productDescription">Description:</label>
+              <textarea id="productDescription" v-model="newProduct.description" required></textarea>
+            </div>
+            <div>
+              <label for="productPrice">Price:</label>
+              <input type="number" id="productPrice" v-model.number="newProduct.cost" required>
+            </div>
+            <button type="submit" class="submit-button">Submit</button>
+          </form>
+        </div>
+      </div>
+  
+      <!-- Button to open the modal -->
+      <div class="add-button-container">
+        <button class="add-button" @click="openModal">Add Product</button>
+      </div>
     </div>
-</template>
-
-<script>
-
-export default {
-    components: {
-    },
+  </template>
+  
+  <script>
+  export default {
     data() {
-        return {
-            items: [
-                { name: 'Pencil', cost: 8 },
-                { name: 'Ballpen', cost: 10 },
-                { name: 'Marker', cost: 15 },
-                { name: 'Bond Paper', cost: 1 },
-                { name: 'Sticky Notes', cost: 10 },
-                { name: 'Yellow Pad', cost: 25 },
-                { name: 'Notebook', cost: 32 },
-                { name: 'Eraser', cost: 5 },
-                { name: 'Colored Paper', cost: 2 },
-                { name: 'Scissor', cost: 28 }
-            ],
-            cart: []
-        };
+      return {
+        items: [
+          { name: 'Pencil', description: 'A writing instrument', cost: 8 },
+          { name: 'Ballpen', description: 'An ink-based pen', cost: 10 },
+          { name: 'Marker', description: 'For highlighting', cost: 15 },
+          { name: 'Bond Paper', description: 'Standard paper for writing', cost: 1 },
+          { name: 'Sticky Notes', description: 'For leaving reminders', cost: 10 }
+        ],
+        newProduct: {
+          name: '',
+          description: '',
+          cost: null
+        },
+        showForm: false
+      };
     },
     methods: {
-    
-    },
-};
-</script>
-
-<style>
-.product-list {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.item-list{
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.item-list th{
-  text-align: left;
-  padding: 8px;
-  background-color: #f2f2f2;
-}
-
-.item-list td{
-  padding: 8px;
-}
-
-</style>
+      addProduct() {
+        if (!this.newProduct.name || !this.newProduct.description || !this.newProduct.cost) {
+          alert("Please fill in all fields.");
+          return;
+        }
+  
+        this.items.push({
+          name: this.newProduct.name,
+          description: this.newProduct.description,
+          cost: this.newProduct.cost
+        });
+  
+        this.newProduct.name = '';
+        this.newProduct.description = '';
+        this.newProduct.cost = null;
+  
+        this.closeModal();
+        alert("Product added successfully!");
+      },
+      formatPrice(price) {
+        return '₱' + price;
+      },
+      openModal() {
+        this.showForm = true;
+        this.$nextTick(() => {
+          document.querySelector('.modal').classList.add('active');
+        });
+      },
+      closeModal() {
+        this.showForm = false;
+        this.$nextTick(() => {
+          document.querySelector('.modal').classList.remove('active');
+        });
+      }
+    }
+  };
+  </script>
+  
+  <style scoped>
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+  }
+  
+  .modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Modal content */
+  .modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+  }
+  
+  /* Close button */
+  .close {
+    color: #000;
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    z-index: 1;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Add some styles to the form inside the modal */
+  .modal-content form {
+    margin-top: 20px;
+  }
+  
+  .modal-content form div {
+    margin-bottom: 15px;
+  }
+  
+  .modal-content label {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .modal-content input[type="text"],
+  .modal-content input[type="number"],
+  .modal-content textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+  }
+  
+  .modal-content input[type="text"]:focus,
+  .modal-content input[type="number"]:focus,
+  .modal-content textarea:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  /* Add some styles to the button */
+  .add-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .submit-button {
+    padding: 10px 20px;
+    background-color: #007bff; 
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; 
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Product list styles */
+  .product-list {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .item-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .item-list th {
+    text-align: left;
+    padding: 8px;
+    background-color: #f2f2f2;
+  }
+  
+  .item-list td {
+    padding: 8px;
+  }
+  
+  .add-button-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .edit-button,
+  .remove-button {
+    padding: 8px 16px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .remove-button {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .edit-button:hover,
+  .remove-button:hover {
+    opacity: 0.8;
+  }
+  </style>
+  
