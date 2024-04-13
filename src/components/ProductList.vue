@@ -113,6 +113,7 @@
   </script>
   
   <style scoped>
+    /* not yet finish */
   /* Modal styles */
   .modal {
     display: none;
