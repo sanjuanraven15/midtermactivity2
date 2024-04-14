@@ -12,13 +12,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in items" :key="index">
+        <tr v-for="(item, index) in items" :key="index" :class="{ 'removing': item.removing }">
           <td>{{ item.name }}</td>
           <td>{{ item.description }}</td>
           <td>{{ formatPrice(item.cost) }}</td>
           <td>
-            <button class="edit-button">Edit</button>
-            <button class="remove-button">Remove</button>
+            <button @click="editProduct(item)">Edit</button> | <!-- Edit button -->
+            <button @click="confirmDelete(item)" class="delete-button">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 export default {
   data() {
     return {
@@ -84,6 +85,31 @@ export default {
     };
   },
   methods: {
+    confirmDelete(product) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to remove this item from the list?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.removeProduct(product);
+        }
+      });
+    },
+    removeProduct(product) {
+      const index = this.items.findIndex(item => item.name === product.name);
+      if (index !== -1) {
+        // Animate removal
+        this.items[index].removing = true;
+        setTimeout(() => {
+          this.items.splice(index, 1);
+        }, 500); // Adjust timing as needed
+      }
+    },
     addProduct() {
       if (!this.newProduct.name || !this.newProduct.description || !this.newProduct.cost) {
         this.showNotification('Please fill in all fields.', 'error');
@@ -279,14 +305,22 @@ export default {
   color: #fff;
 }
 
-.remove-button {
+.delete-button {
+  padding: 8px 20px;
   background-color: #dc3545;
   color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.edit-button:hover,
-.remove-button:hover {
-  opacity: 0.8;
+.delete-button:hover {
+  background-color: #bf858a;
+}
+
+.removing {
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 /* Notification Modal Styles */
