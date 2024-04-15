@@ -13,9 +13,9 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in items" :key="index" :class="{ 'removing': item.removing }">
-          <td>{{ item.name }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ formatPrice(item.cost) }}</td>
+          <td :class="{ 'added-product-transition': addedProduct === item }">{{ item.name }}</td>
+          <td :class="{ 'added-product-transition': addedProduct === item }">{{ item.description }}</td>
+          <td :class="{ 'added-product-transition': addedProduct === item }">{{ formatPrice(item.cost) }}</td>
           <td>
             <button @click="editProduct(item)">Edit</button> | <!-- Edit button -->
             <button @click="confirmDelete(item)" class="delete-button">Delete</button>
@@ -81,7 +81,8 @@ export default {
         show: false,
         message: '',
         type: ''
-      }
+      },
+      addedProduct: null 
     };
   },
   methods: {
@@ -116,18 +117,28 @@ export default {
         return;
       }
 
-      this.items.push({
+
+      this.addedProduct = {
         name: this.newProduct.name,
         description: this.newProduct.description,
         cost: this.newProduct.cost
-      });
+      };
 
+    
+      this.items.push(this.addedProduct);
+
+      
       this.newProduct.name = '';
       this.newProduct.description = '';
       this.newProduct.cost = null;
 
       this.closeModal();
       this.showNotification('Product added successfully!', 'success');
+
+      // Set a timeout to remove the added product after the transition effect
+      setTimeout(() => {
+        this.addedProduct = null;
+      }, 3000);
     },
     formatPrice(price) {
       return '₱' + price;
@@ -344,6 +355,25 @@ export default {
 
 .notification-modal.success {
   background-color: #28a745;
+}
+
+/* Bouncy Transition effect */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.added-product-transition {
+  animation: bounceIn 0.5s ease;
 }
 
 </style>
