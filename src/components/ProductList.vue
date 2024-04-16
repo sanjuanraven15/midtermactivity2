@@ -1,6 +1,8 @@
 <template>
   <div class="product-list">
-    <center><h1>Product List</h1></center>
+    <center>
+      <h1>Product List</h1>
+    </center>
     <hr />
     <table class="item-list">
       <thead>
@@ -12,11 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, index) in items"
-          :key="index"
-          :class="{ removing: item.removing }"
-        >
+        <tr v-for="(item, index) in items" :key="index" :class="{ removing: item.removing }">
           <td :class="{ 'added-product-transition': addedProduct === item }">
             {{ item.name }}
           </td>
@@ -27,13 +25,9 @@
             {{ formatPrice(item.cost) }}
           </td>
           <td>
-            <button
-              @click="openModalForEditing(item, index)"
-              class="edit-button"
-            >
+            <button @click="openModalForEditing(item, index)" class="edit-button">
               Edit
             </button>
-
             |
             <button @click="confirmDelete(item)" class="delete-button">
               Delete
@@ -51,29 +45,15 @@
         <form @submit.prevent="addProduct">
           <div>
             <label for="productName">Product Name:</label>
-            <input
-              type="text"
-              id="productName"
-              v-model="newProduct.name"
-              required
-            />
+            <input type="text" id="productName" v-model="newProduct.name" required />
           </div>
           <div>
             <label for="productDescription">Description:</label>
-            <textarea
-              id="productDescription"
-              v-model="newProduct.description"
-              required
-            ></textarea>
+            <textarea id="productDescription" v-model="newProduct.description" required></textarea>
           </div>
           <div>
             <label for="productPrice">Price:</label>
-            <input
-              type="number"
-              id="productPrice"
-              v-model.number="newProduct.cost"
-              required
-            />
+            <input type="number" id="productPrice" v-model.number="newProduct.cost" required />
           </div>
           <button type="submit" class="submit-button">Submit</button>
         </form>
@@ -87,29 +67,15 @@
       <form @submit.prevent="submitEdit">
         <div>
           <label for="editProductName">Product Name:</label>
-          <input
-            type="text"
-            id="editProductName"
-            v-model="editFormData.name"
-            required
-          />
+          <input type="text" id="editProductName" v-model="editFormData.name" required />
         </div>
         <div>
           <label for="editProductDescription">Description:</label>
-          <textarea
-            id="editProductDescription"
-            v-model="editFormData.description"
-            required
-          ></textarea>
+          <textarea id="editProductDescription" v-model="editFormData.description" required></textarea>
         </div>
         <div>
           <label for="editProductPrice">Price:</label>
-          <input
-            type="number"
-            id="editProductPrice"
-            v-model.number="editFormData.cost"
-            required
-          />
+          <input type="number" id="editProductPrice" v-model.number="editFormData.cost" required />
         </div>
         <button type="submit">Submit</button>
       </form>
@@ -121,11 +87,7 @@
     </div>
 
     <!-- Notification Modal -->
-    <div
-      class="notification-modal"
-      v-if="notification.show"
-      :class="[notification.type]"
-    >
+    <div class="notification-modal" v-if="notification.show" :class="[notification.type]">
       <p>{{ notification.message }}</p>
     </div>
   </div>
@@ -194,7 +156,7 @@ export default {
         this.items[index].removing = true;
         setTimeout(() => {
           this.items.splice(index, 1);
-        }, 500); 
+        }, 500);
       }
     },
     addProduct() {
@@ -447,6 +409,14 @@ export default {
   color: #fff;
 }
 
+.edit-button:hover {
+  background-color: #a1d3a2;
+}
+.editing {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
 .delete-button {
   padding: 8px 20px;
   background-color: #dc3545;
@@ -495,9 +465,11 @@ export default {
     opacity: 0;
     transform: scale(0.1);
   }
+
   70% {
     transform: scale(1.2);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -513,22 +485,22 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #f9f9f9; 
+  background-color: #f9f9f9;
   padding: 50px;
-  border-radius: 12px; 
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); 
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   z-index: 999;
-  max-width: 400px; 
+  max-width: 400px;
   width: 90%;
 }
 
 .edit-product-popup h2 {
   margin-bottom: 20px;
-  font-size: 20px; 
+  font-size: 20px;
 }
 
 .edit-product-popup form div {
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .edit-product-popup label {
@@ -540,9 +512,9 @@ export default {
 .edit-product-popup input[type="number"],
 .edit-product-popup textarea {
   width: 100%;
-  padding: 12px; 
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 8px; 
+  border-radius: 8px;
 }
 
 .edit-product-popup input[type="text"]:focus,
@@ -553,7 +525,7 @@ export default {
 }
 
 .edit-product-popup button[type="submit"] {
-  width: 100%; 
+  width: 100%;
   padding: 12px 0;
   background-color: #007bff;
   color: #fff;
@@ -565,5 +537,6 @@ export default {
 .edit-product-popup button[type="submit"]:hover {
   background-color: #0056b3;
 }
+
 
 </style>
