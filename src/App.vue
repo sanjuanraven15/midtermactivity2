@@ -1,3 +1,4 @@
+
 <template>
   <div id="app">
     <ProductList />
@@ -5,6 +6,7 @@
 </template>
 
 <script>
+//script
 import ProductList from './components/ProductList.vue';
 
 export default {
